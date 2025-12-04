@@ -1,0 +1,1 @@
+Lancer le projet avec node 20 et lancer le fichier App.js
