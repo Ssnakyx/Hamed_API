@@ -53,7 +53,6 @@ router.post('/refresh-token', (req, res) => {
   });
 });
 
-
 router.post('/logout', (req, res) => {
   const { refreshToken } = req.body;
   db.prepare('DELETE FROM refresh_tokens WHERE token = ?').run(refreshToken);
@@ -65,4 +64,5 @@ router.get('/profile', auth, (req, res) => {
   res.json({ user });
 });
 
-module.exports = router;
+module.exports = router; 
+module.exports.auth = auth; 

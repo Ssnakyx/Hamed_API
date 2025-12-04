@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const productsRouter = require('./routes/products');
 const authRouter = require('./routes/auth');
-
+const { auth } = require('./routes/auth');
 const app = express();
 
 app.use(cors());
