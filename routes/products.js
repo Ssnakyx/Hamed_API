@@ -11,8 +11,8 @@ router.get('/products', (req, res) => {
   
   if (invalidFilters.length > 0) {
     return res.status(400).json({ 
-      error: `Filtres non autorisés : ${invalidFilters.join(', ')}. ` +
-             `Champs autorisés : ${ALLOWED_FILTERS.join(', ')}` 
+      error: `Filtres non invalide : ${invalidFilters.join(', ')}. ` +
+             `Champs valide : ${ALLOWED_FILTERS.join(', ')}` 
     });
   }
   const page = parseInt(req.query.page) || 1;
@@ -67,7 +67,6 @@ router.get('/products', (req, res) => {
 
   params.push(limit, offset);
   let products = db.prepare(productsQuery).all(...params);
-
   if (includeCategory) {
     products = products.map(product => ({
       ...product,
