@@ -14,9 +14,7 @@ router.post('/login', (req, res) => {
   if (!email || !password) {
     return res.status(400).json({ error: 'Email et mdp' });
   }
-
   const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
-  
   if (!user || user.password !== password) {
     return res.status(401).json({ error: 'mauvais compte' });
   }
