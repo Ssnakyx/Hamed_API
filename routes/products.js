@@ -2,19 +2,19 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 
-const ALLOWED_FILTERS = ['category', 'minPrice', 'maxPrice'];
-
 router.get('/products', (req, res) => {
+  const ALLOWED_FILTERS = ['category', 'minPrice', 'maxPrice'];
   const invalidFilters = Object.keys(req.query).filter(key => 
-    !['page', 'limit', 'sort', 'include'].includes(key) && !ALLOWED_FILTERS.includes(key)
+    !['page', 'limit', 'sort', 'include', 'fields'].includes(key) && 
+    !ALLOWED_FILTERS.includes(key)
   );
-
+  
   if (invalidFilters.length > 0) {
-    return res.status(400).json({
-      error: `Filtres non autorisés : ${invalidFilters.join(', ')}. Champs autorisés : ${ALLOWED_FILTERS.join(', ')}`
+    return res.status(400).json({ 
+      error: `Filtres non autorisés : ${invalidFilters.join(', ')}. ` +
+             `Champs autorisés : ${ALLOWED_FILTERS.join(', ')}` 
     });
   }
-
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const offset = (page - 1) * limit;

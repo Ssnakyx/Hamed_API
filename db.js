@@ -1,20 +1,34 @@
 const Database = require('better-sqlite3');
+
 const db = new Database('store.db');
 db.pragma('foreign_keys = ON');
 
 db.exec(`
   CREATE TABLE IF NOT EXISTS categories (
-    id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, description TEXT NOT NULL
+    id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    name TEXT NOT NULL UNIQUE, 
+    description TEXT NOT NULL
   );
   CREATE TABLE IF NOT EXISTS products (
-    id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, price REAL NOT NULL, 
-    stock INTEGER DEFAULT 0, created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
+    id INTEGER PRIMARY KEY AUTOINCREMENT, 
+    name TEXT NOT NULL, 
+    price REAL NOT NULL, 
+    stock INTEGER DEFAULT 0, 
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP, 
     category_id INTEGER REFERENCES categories(id)
+  );
+  CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
   );
 `);
 
 [['Électronique', 'Appareils'], ['Vêtements', 'Mode'], ['Maison', 'Décoration']]
-  .forEach(([name, desc]) => db.prepare('INSERT OR IGNORE INTO categories VALUES (NULL, ?, ?)').run(name, desc));
+  .forEach(([name, desc]) => 
+    db.prepare('INSERT OR IGNORE INTO categories VALUES (NULL, ?, ?)').run(name, desc)
+  );
 
 [
   ['Google Pixel 8 Pro', 999.99, 28, 1], ['Sony WH-1000XM5', 399.99, 40, 1], ['iPad Mini 6', 649.99, 18, 1],
@@ -29,6 +43,14 @@ db.exec(`
   ['Miroir mural rond 70cm', 79.99, 25, 3], ['Plaque induction portable', 59.99, 35, 3], ['Tondeuse à barbe Philips OneBlade', 39.99, 55, 3]
 ].forEach(([name, price, stock, catId]) => 
   db.prepare('INSERT OR IGNORE INTO products VALUES (NULL, ?, ?, ?, CURRENT_TIMESTAMP, ?)').run(name, price, stock, catId)
+);
+
+[
+  ['user1@api.com', 'user1'],
+  ['user2@api.com', 'user2'],
+  ['user3@api.com', 'user3']
+].forEach(([email, password]) => 
+  db.prepare('INSERT OR IGNORE INTO users (email, password) VALUES (?, ?)').run(email, password)
 );
 
 module.exports = db;
